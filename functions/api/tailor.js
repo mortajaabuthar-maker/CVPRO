@@ -24,7 +24,7 @@ const json = (obj, status = 200) =>
   });
 
 async function callGemini(env, userText) {
-  const model = env.GEMINI_MODEL || "gemini-2.5-flash";
+  const model = env.GEMINI_MODEL || "gemini-3.8-flash";
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
     {
@@ -45,7 +45,7 @@ async function callGemini(env, userText) {
 }
 
 async function callGroq(env, userText) {
-  const model = env.GROQ_MODEL || "llama-3.3-70b-versatile";
+  const model = env.GROQ_MODEL || "openai/gpt-oss-120b";
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${env.GROQ_API_KEY}` },
