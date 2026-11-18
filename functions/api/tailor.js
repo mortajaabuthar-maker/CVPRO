@@ -159,3 +159,8 @@ export async function onRequestPost({ request, env }) {
   }
   return json({ error: "الخدمة مشغولة حالياً. حاول بعد دقيقة." }, 503);
 }
+
+// Health check: open /api/tailor in the browser. Remove this once everything works.
+export async function onRequestGet({ env }) {
+  return json({ ok: true, gemini: !!env.GEMINI_API_KEY, groq: !!env.GROQ_API_KEY });
+}
