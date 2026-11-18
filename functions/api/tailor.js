@@ -37,7 +37,7 @@ async function callGemini(env, userText) {
       }),
     }
   );
-  if (!res.ok) throw new Error(`gemini ${res.status}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
   const data = await res.json();
   const text = data?.candidates?.[0]?.content?.parts?.map((p) => p.text || "").join("");
   if (!text) throw new Error("gemini empty");
@@ -59,7 +59,7 @@ async function callGroq(env, userText) {
       ],
     }),
   });
-  if (!res.ok) throw new Error(`groq ${res.status}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
   const data = await res.json();
   const text = data?.choices?.[0]?.message?.content;
   if (!text) throw new Error("groq empty");
@@ -149,15 +149,18 @@ export async function onRequestPost({ request, env }) {
 
   const userText = `=== CURRENT CV ===\n${cv}\n\n=== TARGET JOB DESCRIPTION ===\n${jd}`;
 
+  const errors = [];
   for (const [name, fn] of providers) {
     try {
       const raw = await fn(env, userText);
       return json({ ...parseResult(raw), provider: name });
     } catch (err) {
       console.log("provider failed:", name, String(err));
+      errors.push(`${name}: ${String(err.message || err)}`);
     }
   }
-  return json({ error: "الخدمة مشغولة حالياً. حاول بعد دقيقة." }, 503);
+  // TEMP DEBUG: shows why providers failed. Remove the details part once everything works.
+  return json({ error: "الخدمة مشغولة حالياً. حاول بعد دقيقة. [" + errors.join(" | ") + "]" }, 503);
 }
 
 // Health check: open /api/tailor in the browser. Remove this once everything works.
