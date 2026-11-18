@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>عدّل سيرتك على الوظيفة</title>
+<meta name="description" content="الصق سيرتك الذاتية ووصف الوظيفة، واحصل على سيرة معدّلة تناسب الوظيفة. مجاني وبدون تسجيل.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f3f5f1;
+    --sheet: #ffffff;
+    --ink: #1c2b2e;
+    --muted: #5d6e70;
+    --line: #c8d2cb;
+    --accent: #0f6b6b;
+    --accent-ink: #ffffff;
+    --mark: #f6d55c;
+    --err: #a4301f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #18211f; --sheet: #212c2a; --ink: #e6ece8; --muted: #9db0aa;
+      --line: #35443f; --accent: #4fb3a9; --accent-ink: #0d1a18; --mark: #8a7420; --err: #ff8c78;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font: 400 1rem/1.7 "IBM Plex Sans Arabic", system-ui, sans-serif;
+    padding: 2.5rem 1.25rem 4rem;
+  }
+  main { max-width: 68rem; margin-inline: auto; }
+  h1 { font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1.25; margin: 0 0 .5rem; font-weight: 700; }
+  .sub { color: var(--muted); margin: 0 0 2rem; max-width: 42rem; }
+  .inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  @media (max-width: 760px) { .inputs { grid-template-columns: 1fr; } }
+  label { display: block; font-weight: 500; margin-bottom: .4rem; }
+  textarea {
+    width: 100%; min-height: 20rem; resize: vertical; padding: .9rem 1rem;
+    background: var(--sheet); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 6px;
+    font: inherit; font-size: .95rem; line-height: 1.6;
+  }
+  textarea:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .count { font-size: .8rem; color: var(--muted); margin-top: .25rem; }
+  .actions { margin: 1.5rem 0 .75rem; display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+  button {
+    font: inherit; font-weight: 500; cursor: pointer;
+    padding: .7rem 1.6rem; border-radius: 6px; border: 1px solid var(--accent);
+    background: var(--accent); color: var(--accent-ink);
+  }
+  button.ghost { background: transparent; color: var(--accent); }
+  button:disabled { opacity: .55; cursor: wait; }
+  .status { color: var(--muted); }
+  .status.err { color: var(--err); }
+  .privacy { font-size: .85rem; color: var(--muted); margin-top: 1rem; }
+  .upload { display: flex; align-items: center; gap: .75rem; margin-bottom: .5rem; flex-wrap: wrap; }
+  .sr { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .filebtn {
+    display: inline-block; margin: 0; cursor: pointer; padding: .35rem .9rem; font-size: .9rem;
+    border: 1px solid var(--accent); color: var(--accent); border-radius: 6px;
+  }
+  .sr:focus-visible + .filebtn { outline: 3px solid var(--accent); outline-offset: 2px; }
+  #ts { margin-top: 1.25rem; }
+  #result { display: none; margin-top: 2.5rem; }
+  #result.show { display: block; }
+  .result-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 1.25rem; align-items: start; }
+  @media (max-width: 760px) { .result-grid { grid-template-columns: 1fr; } }
+  .sheet {
+    background: var(--sheet); border: 1px solid var(--line); border-radius: 6px;
+    padding: 1.5rem; white-space: pre-wrap; word-break: break-word; font-size: .95rem; line-height: 1.65;
+  }
+  aside h2 { font-size: 1rem; margin: 0 0 .4rem; }
+  aside ul { margin: 0 0 1.25rem; padding-inline-start: 1.1rem; }
+  aside li { margin-bottom: .35rem; }
+  aside .gaps li::marker { color: var(--err); }
+  .toolbar { display: flex; gap: .5rem; margin-bottom: .75rem; flex-wrap: wrap; }
+  .toolbar button { padding: .45rem 1rem; font-size: .9rem; }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .inputs, .actions, .privacy, h1, .sub, aside, .toolbar { display: none !important; }
+    .result-grid { display: block; }
+    .sheet { border: 0; padding: 0; color: #000; }
+  }
+  @media (prefers-reduced-motion: no-preference) { button { transition: background .15s, color .15s; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>عدّل سيرتك على الوظيفة</h1>
+  <p class="sub">الصق سيرتك الذاتية القديمة ووصف الوظيفة الجديدة، وراح نعيد ترتيبها وصياغتها لتناسب الوظيفة، من دون ما نضيف خبرات ما عندك.</p>
+
+  <div class="inputs">
+    <div>
+      <label for="cv">السيرة الذاتية الحالية</label>
+      <div class="upload">
+        <input id="file" class="sr" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+        <label for="file" class="filebtn">ارفع ملف PDF أو Word</label>
+        <span id="fstat" class="status" role="status" aria-live="polite">أو الصق النص بالأسفل</span>
+      </div>
+      <textarea id="cv" dir="auto" maxlength="12000" placeholder="الصق نص السيرة هنا"></textarea>
+      <div class="count"><span id="cvc">0</span> / 12000</div>
+    </div>
+    <div>
+      <label for="jd">وصف الوظيفة (Job Description)</label>
+      <textarea id="jd" dir="auto" maxlength="8000" placeholder="الصق وصف الوظيفة هنا"></textarea>
+      <div class="count"><span id="jdc">0</span> / 8000</div>
+    </div>
+  </div>
+
+  <div id="ts"></div>
+  <div class="actions">
+    <button id="go" type="button">عدّل السيرة</button>
+    <span id="status" class="status" role="status" aria-live="polite"></span>
+  </div>
+  <p class="privacy">لا نخزّن سيرتك ولا وصف الوظيفة. قراءة الملف تتم داخل متصفحك ولا يُرفع الملف نفسه، والنص فقط يُرسل للمعالجة ثم يُحذف.</p>
+
+  <section id="result" aria-label="النتيجة">
+    <div class="toolbar">
+      <button id="copy" type="button" class="ghost">انسخ</button>
+      <button id="dl" type="button" class="ghost">حمّل TXT</button>
+      <button id="print" type="button" class="ghost">اطبع أو احفظ PDF</button>
+    </div>
+    <div class="result-grid">
+      <div id="out" class="sheet" dir="auto"></div>
+      <aside>
+        <h2>شنو تغيّر</h2>
+        <ul id="changes"></ul>
+        <h2>متطلبات ما ظاهرة بسيرتك</h2>
+        <ul id="gaps" class="gaps"></ul>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var cv = $("cv"), jd = $("jd"), go = $("go"), st = $("status");
+
+  function count() { $("cvc").textContent = cv.value.length; $("jdc").textContent = jd.value.length; }
+  cv.addEventListener("input", count); jd.addEventListener("input", count);
+
+  // Put your Cloudflare Turnstile Site Key here to enable the bot check. Leave empty to disable.
+  var TURNSTILE_SITE_KEY = "";
+  var tsToken = "", tsId = null;
+
+  function loadScript(src) {
+    return new Promise(function (res, rej) {
+      var s = document.createElement("script");
+      s.src = src; s.onload = res;
+      s.onerror = function () { rej(new Error("تعذّر تحميل مكتبة القراءة. تأكد من الإنترنت وحاول ثانية.")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  if (TURNSTILE_SITE_KEY) {
+    window.onTsLoad = function () {
+      tsId = turnstile.render("#ts", {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: function (t) { tsToken = t; },
+        "expired-callback": function () { tsToken = ""; }
+      });
+    };
+    loadScript("https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTsLoad").catch(function () {});
+  }
+
+  var PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
+  async function readPdf(buf) {
+    await loadScript(PDFJS + "pdf.min.js");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + "pdf.worker.min.js";
+    var pdf = await pdfjsLib.getDocument({ data: buf }).promise, pages = [];
+    for (var p = 1; p <= pdf.numPages; p++) {
+      var page = await pdf.getPage(p), tc = await page.getTextContent();
+      var lines = [], line = "", y = null;
+      tc.items.forEach(function (it) {
+        var iy = it.transform[5];
+        if (y !== null && Math.abs(iy - y) > 2 && line.trim()) { lines.push(line.trim()); line = ""; }
+        line += it.str; y = iy;
+        if (it.hasEOL) { lines.push(line.trim()); line = ""; }
+      });
+      if (line.trim()) lines.push(line.trim());
+      pages.push(lines.join("\n"));
+    }
+    return pages.join("\n\n");
+  }
+  async function readDocx(buf) {
+    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js");
+    return (await mammoth.extractRawText({ arrayBuffer: buf })).value;
+  }
+
+  $("file").addEventListener("change", async function (e) {
+    var f = e.target.files[0], fs = $("fstat");
+    if (!f) return;
+    fs.className = "status";
+    if (f.size > 5 * 1024 * 1024) { fs.className = "status err"; fs.textContent = "الملف أكبر من 5MB."; return; }
+    fs.textContent = "جاري قراءة الملف...";
+    try {
+      var name = f.name.toLowerCase(), buf = await f.arrayBuffer(), text;
+      if (name.endsWith(".pdf")) text = await readPdf(buf);
+      else if (name.endsWith(".docx")) text = await readDocx(buf);
+      else throw new Error("الصيغة المدعومة PDF و DOCX فقط. ملفات DOC القديمة احفظها كـ DOCX.");
+      text = text.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+      if (text.length < 50) throw new Error("ما قدرنا نستخرج نص من الملف. إذا كان صورة ممسوحة ضوئياً، الصق النص يدوياً.");
+      var cut = text.length > 12000;
+      cv.value = text.slice(0, 12000); count();
+      fs.textContent = cut ? "الملف طويل واقتطعنا أول 12000 حرف. راجع النص." : "تمت القراءة. راجع النص وعدّله إذا لزم.";
+    } catch (err) {
+      fs.className = "status err"; fs.textContent = err.message;
+    }
+    e.target.value = "";
+  });
+
+  function fill(ul, items) {
+    ul.innerHTML = "";
+    if (!items.length) { var li = document.createElement("li"); li.textContent = "لا شيء"; ul.appendChild(li); return; }
+    items.forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+  }
+
+  go.addEventListener("click", async function () {
+    st.className = "status"; st.textContent = "";
+    if (cv.value.trim().length < 50 || jd.value.trim().length < 30) {
+      st.className = "status err"; st.textContent = "الصق السيرة ووصف الوظيفة كاملين."; return;
+    }
+    if (TURNSTILE_SITE_KEY && !tsToken) {
+      st.className = "status err"; st.textContent = "أكمل التحقق أولاً."; return;
+    }
+    go.disabled = true; st.textContent = "جاري التعديل، يستغرق عادةً أقل من نصف دقيقة...";
+    try {
+      var res = await fetch("/api/tailor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cv: cv.value, jd: jd.value, ts: tsToken })
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || "صار خطأ. حاول مرة ثانية.");
+      $("out").textContent = data.cv;
+      fill($("changes"), data.changes || []);
+      fill($("gaps"), data.gaps || []);
+      $("result").classList.add("show");
+      $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+      st.textContent = "";
+    } catch (e) {
+      st.className = "status err"; st.textContent = e.message;
+    } finally {
+      go.disabled = false;
+      if (tsId !== null) { turnstile.reset(tsId); tsToken = ""; }
+    }
+  });
+
+  $("copy").addEventListener("click", function () {
+    navigator.clipboard.writeText($("out").textContent).then(function () {
+      $("copy").textContent = "تم النسخ"; setTimeout(function () { $("copy").textContent = "انسخ"; }, 1500);
+    });
+  });
+  $("dl").addEventListener("click", function () {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([$("out").textContent], { type: "text/plain;charset=utf-8" }));
+    a.download = "tailored-cv.txt"; a.click(); URL.revokeObjectURL(a.href);
+  });
+  $("print").addEventListener("click", function () { window.print(); });
+})();
+</script>
+</body>
+</html>
