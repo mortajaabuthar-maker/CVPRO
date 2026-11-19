@@ -1,6 +1,6 @@
 # CVPRO
 
-A lightweight Cloudflare Pages CV editor. Users paste or upload an existing CV (PDF/DOCX), optionally paste a job description, run AI improvement, edit the structured sections, preview, and export Word or print/save as PDF.
+CVPRO is a responsive Arabic-first CV editor for Cloudflare Pages. Users can upload or paste an existing CV (PDF/DOCX), choose general improvement or job tailoring, edit structured sections, preview the document, and export Word or print/save as PDF.
 
 
 ## Features
@@ -8,7 +8,9 @@ A lightweight Cloudflare Pages CV editor. Users paste or upload an existing CV (
 - CV improvement with an optional job description.
 - Structured editable fields: personal details, summary, experience, education, skills, certifications, projects, and languages.
 - AI change notes and job-requirement gaps.
-- DOCX download and print-to-PDF workflow.
+- Redesigned responsive UI with upload drag-and-drop and Arabic RTL layout.
+- CV live preview with improved print styles.
+- DOCX download and browser print-to-PDF workflow.
 - Gemini and Groq fallback providers.
 - Optional Turnstile verification and KV-based request limits.
 
