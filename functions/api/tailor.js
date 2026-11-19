@@ -20,7 +20,15 @@ Rules:
 - Order jobs, education and projects from most recent to oldest.
 - Bullets: one idea each, start with a strong action verb, concise, at most 6 per role. Merge duplicates. If the original has only a paragraph for a job, split it into bullets.
 - Summary: 2 to 3 sentences using only facts from the CV. If the original has no summary, write one from its facts.
-- If a JD is provided: tailor the CV to it. Put the most relevant experience and skills first, shorten what is irrelevant, and use the JD's keywords ONLY where the CV already shows that experience. List up to 5 JD requirements the CV does not show in "gaps".
+- If a JD is provided, TAILORING IS THE MAIN GOAL. Do it actively, not lightly. A reader comparing your result with a plain restructure must see a clearly different title, summary, bullet wording and ordering. Follow these steps:
+  1. Read the JD first. Identify the target job title, its 5 to 8 most important requirements, and the exact terms it uses (skills, tools, responsibilities, soft skills).
+  2. "title": make the headline fit the target role as far as the CV honestly supports. Use the candidate's real job title plus a focus phrase taken from the JD (for example "Technical Support Engineer | Customer Communication & Client Relations"). Never claim a job title the candidate has not held.
+  3. "summary": rewrite it from scratch for THIS job, in at most 3 sentences. Open with what the candidate offers in terms of the JD's needs. Use the JD's wording for strengths the CV really shows.
+  4. Experience bullets: rewrite EVERY bullet so the part relevant to the JD comes first and uses the JD's vocabulary. Reframe real work in the JD's terms when the underlying fact is true (for example, remote end-user support becomes customer-facing communication and problem resolution; escalating faults becomes cross-team coordination). Put the most relevant bullets first and shorten or cut the irrelevant ones.
+  5. Skills: reorder groups and items so what the JD asks for comes first, and rename groups using the JD's vocabulary.
+  6. Education, certifications, projects: keep them, but emphasise what is relevant to the JD.
+  7. If the JD is in a different field from the CV, emphasise the transferable strengths the CV actually evidences (communication, customer handling, troubleshooting, reporting, learning fast, working to targets) and do not pretend the candidate has experience in the new field.
+  8. HARD LIMIT: you may reword, reorder, emphasise and translate into the JD's terminology, but you may not add experience, tools, numbers, qualifications or claims that the CV does not support. Every JD requirement the CV does not show goes in "gaps" (up to 6), never into the CV.
 - If no JD is provided: only restructure and polish. "gaps" must be an empty list.
 - Keep the CV in the same language as the original. Section labels must be in that language too.
 - All strings are plain text. No markdown, no asterisks, no "#", no bullet characters inside strings.
@@ -42,7 +50,7 @@ Rules:
   "changes": ["<short note on what you changed>"],
   "gaps": [""]
 }
-- "changes": 3 to 6 short notes, written in the same language as the CV.`;
+- "changes": 4 to 6 short notes, written in the same language as the CV. When a JD was provided, each note must say concretely what was adapted to the job (for example: the summary now focuses on customer communication, the title now includes a sales-support focus, bullets reordered to lead with customer-facing work).`;
 
 const DEFAULT_LABELS = {
   en: {
@@ -62,7 +70,7 @@ const json = (obj, status = 200) =>
     headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
   });
 
-async function callGemini(env, userText) {
+async function callGemini(env, userText, temp = 0.3) {
   const model = env.GEMINI_MODEL || "gemini-3.8-flash";
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
@@ -72,7 +80,7 @@ async function callGemini(env, userText) {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: SYSTEM }] },
         contents: [{ role: "user", parts: [{ text: userText }] }],
-        generationConfig: { temperature: 0.3, responseMimeType: "application/json", maxOutputTokens: 8192 },
+        generationConfig: { temperature: temp, responseMimeType: "application/json", maxOutputTokens: 8192 },
       }),
     }
   );
@@ -83,14 +91,14 @@ async function callGemini(env, userText) {
   return text;
 }
 
-async function callGroq(env, userText) {
+async function callGroq(env, userText, temp = 0.3) {
   const model = env.GROQ_MODEL || "openai/gpt-oss-120b";
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${env.GROQ_API_KEY}` },
     body: JSON.stringify({
       model,
-      temperature: 0.3,
+      temperature: temp,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: SYSTEM },
@@ -245,7 +253,7 @@ export async function onRequestPost({ request, env }) {
   const errors = [];
   for (const [name, fn] of providers) {
     try {
-      const raw = await fn(env, userText);
+      const raw = await fn(env, userText, jd ? 0.5 : 0.3);
       return json({ ...parseResult(raw), tailored: !!jd, provider: name });
     } catch (err) {
       console.log("provider failed:", name, String(err));
