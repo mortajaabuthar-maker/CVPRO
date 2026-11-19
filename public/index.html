@@ -1,269 +1,46 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>عدّل سيرتك على الوظيفة</title>
-<meta name="description" content="الصق سيرتك الذاتية ووصف الوظيفة، واحصل على سيرة معدّلة تناسب الوظيفة. مجاني وبدون تسجيل.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CVPRO — محرّر السيرة الذاتية</title>
+<meta name="description" content="ارفع سيرتك الذاتية، حسّن محتواها، عدّلها، ثم صدّر نسخة Word أو PDF.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --paper: #f3f5f1;
-    --sheet: #ffffff;
-    --ink: #1c2b2e;
-    --muted: #5d6e70;
-    --line: #c8d2cb;
-    --accent: #0f6b6b;
-    --accent-ink: #ffffff;
-    --mark: #f6d55c;
-    --err: #a4301f;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #18211f; --sheet: #212c2a; --ink: #e6ece8; --muted: #9db0aa;
-      --line: #35443f; --accent: #4fb3a9; --accent-ink: #0d1a18; --mark: #8a7420; --err: #ff8c78;
-    }
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body {
-    background: var(--paper); color: var(--ink);
-    font: 400 1rem/1.7 "IBM Plex Sans Arabic", system-ui, sans-serif;
-    padding: 2.5rem 1.25rem 4rem;
-  }
-  main { max-width: 68rem; margin-inline: auto; }
-  h1 { font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1.25; margin: 0 0 .5rem; font-weight: 700; }
-  .sub { color: var(--muted); margin: 0 0 2rem; max-width: 42rem; }
-  .inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-  @media (max-width: 760px) { .inputs { grid-template-columns: 1fr; } }
-  label { display: block; font-weight: 500; margin-bottom: .4rem; }
-  textarea {
-    width: 100%; min-height: 20rem; resize: vertical; padding: .9rem 1rem;
-    background: var(--sheet); color: var(--ink);
-    border: 1px solid var(--line); border-radius: 6px;
-    font: inherit; font-size: .95rem; line-height: 1.6;
-  }
-  textarea:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-  .count { font-size: .8rem; color: var(--muted); margin-top: .25rem; }
-  .actions { margin: 1.5rem 0 .75rem; display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
-  button {
-    font: inherit; font-weight: 500; cursor: pointer;
-    padding: .7rem 1.6rem; border-radius: 6px; border: 1px solid var(--accent);
-    background: var(--accent); color: var(--accent-ink);
-  }
-  button.ghost { background: transparent; color: var(--accent); }
-  button:disabled { opacity: .55; cursor: wait; }
-  .status { color: var(--muted); }
-  .status.err { color: var(--err); }
-  .privacy { font-size: .85rem; color: var(--muted); margin-top: 1rem; }
-  .upload { display: flex; align-items: center; gap: .75rem; margin-bottom: .5rem; flex-wrap: wrap; }
-  .sr { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  .filebtn {
-    display: inline-block; margin: 0; cursor: pointer; padding: .35rem .9rem; font-size: .9rem;
-    border: 1px solid var(--accent); color: var(--accent); border-radius: 6px;
-  }
-  .sr:focus-visible + .filebtn { outline: 3px solid var(--accent); outline-offset: 2px; }
-  #ts { margin-top: 1.25rem; }
-  #result { display: none; margin-top: 2.5rem; }
-  #result.show { display: block; }
-  .result-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 1.25rem; align-items: start; }
-  @media (max-width: 760px) { .result-grid { grid-template-columns: 1fr; } }
-  .sheet {
-    background: var(--sheet); border: 1px solid var(--line); border-radius: 6px;
-    padding: 1.5rem; white-space: pre-wrap; word-break: break-word; font-size: .95rem; line-height: 1.65;
-  }
-  aside h2 { font-size: 1rem; margin: 0 0 .4rem; }
-  aside ul { margin: 0 0 1.25rem; padding-inline-start: 1.1rem; }
-  aside li { margin-bottom: .35rem; }
-  aside .gaps li::marker { color: var(--err); }
-  .toolbar { display: flex; gap: .5rem; margin-bottom: .75rem; flex-wrap: wrap; }
-  .toolbar button { padding: .45rem 1rem; font-size: .9rem; }
-  @media print {
-    body { background: #fff; padding: 0; }
-    .inputs, .actions, .privacy, h1, .sub, aside, .toolbar { display: none !important; }
-    .result-grid { display: block; }
-    .sheet { border: 0; padding: 0; color: #000; }
-  }
-  @media (prefers-reduced-motion: no-preference) { button { transition: background .15s, color .15s; } }
-</style>
-</head>
-<body>
-<main>
-  <h1>عدّل سيرتك على الوظيفة</h1>
-  <p class="sub">الصق سيرتك الذاتية القديمة ووصف الوظيفة الجديدة، وراح نعيد ترتيبها وصياغتها لتناسب الوظيفة، من دون ما نضيف خبرات ما عندك.</p>
-
-  <div class="inputs">
-    <div>
-      <label for="cv">السيرة الذاتية الحالية</label>
-      <div class="upload">
-        <input id="file" class="sr" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-        <label for="file" class="filebtn">ارفع ملف PDF أو Word</label>
-        <span id="fstat" class="status" role="status" aria-live="polite">أو الصق النص بالأسفل</span>
-      </div>
-      <textarea id="cv" dir="auto" maxlength="12000" placeholder="الصق نص السيرة هنا"></textarea>
-      <div class="count"><span id="cvc">0</span> / 12000</div>
-    </div>
-    <div>
-      <label for="jd">وصف الوظيفة (Job Description)</label>
-      <textarea id="jd" dir="auto" maxlength="8000" placeholder="الصق وصف الوظيفة هنا"></textarea>
-      <div class="count"><span id="jdc">0</span> / 8000</div>
-    </div>
-  </div>
-
-  <div id="ts"></div>
-  <div class="actions">
-    <button id="go" type="button">عدّل السيرة</button>
-    <span id="status" class="status" role="status" aria-live="polite"></span>
-  </div>
-  <p class="privacy">لا نخزّن سيرتك ولا وصف الوظيفة. قراءة الملف تتم داخل متصفحك ولا يُرفع الملف نفسه، والنص فقط يُرسل للمعالجة ثم يُحذف.</p>
-
-  <section id="result" aria-label="النتيجة">
-    <div class="toolbar">
-      <button id="copy" type="button" class="ghost">انسخ</button>
-      <button id="dl" type="button" class="ghost">حمّل TXT</button>
-      <button id="print" type="button" class="ghost">اطبع أو احفظ PDF</button>
-    </div>
-    <div class="result-grid">
-      <div id="out" class="sheet" dir="auto"></div>
-      <aside>
-        <h2>شنو تغيّر</h2>
-        <ul id="changes"></ul>
-        <h2>متطلبات ما ظاهرة بسيرتك</h2>
-        <ul id="gaps" class="gaps"></ul>
-      </aside>
-    </div>
-  </section>
+:root{--bg:#f4f6f8;--panel:#fff;--ink:#17252d;--muted:#64727b;--line:#dce3e7;--accent:#0f6b6b;--accent2:#e7f3f1;--danger:#b13d32;--shadow:0 12px 40px rgba(23,37,45,.07}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121b20;--panel:#1b262d;--ink:#e9f0f2;--muted:#a5b2ba;--line:#33434c;--accent:#62c3b8;--accent2:#213b3a;--danger:#ff9585;--shadow:0 12px 40px rgba(0,0,0,.2)}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "IBM Plex Sans Arabic",system-ui,sans-serif;padding:28px 18px 60px}main{max-width:1100px;margin:auto}.hero{padding:24px 0 28px}.brand{display:flex;align-items:center;gap:10px;color:var(--accent);font-weight:700;letter-spacing:.04em}.logo{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:var(--accent);color:white;font-weight:700}h1{font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.25;margin:18px 0 8px}.subtitle{color:var(--muted);max-width:740px;margin:0}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow);margin-bottom:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.grid .wide{grid-column:1/-1}@media(max-width:760px){.grid{grid-template-columns:1fr}.grid .wide{grid-column:auto}}label{display:block;font-weight:600;margin:0 0 8px}textarea,input{width:100%;font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}textarea{min-height:220px;resize:vertical}textarea:focus,input:focus,button:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 30%,transparent);outline-offset:2px}.small{font-size:.85rem;color:var(--muted)}.uploadrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0 12px}.file{position:absolute;width:1px;height:1px;opacity:0}.filelabel{display:inline-flex;cursor:pointer;border:1px solid var(--accent);color:var(--accent);padding:8px 13px;border-radius:9px;font-weight:600}.file:focus-visible+.filelabel{outline:3px solid var(--accent)}.actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}button{border:1px solid var(--accent);border-radius:9px;padding:10px 17px;background:var(--accent);color:white;font:inherit;font-weight:600;cursor:pointer}button.secondary{background:transparent;color:var(--accent)}button:disabled{opacity:.55;cursor:wait}.status{color:var(--muted)}.status.error{color:var(--danger)}.notice{font-size:.85rem;color:var(--muted);margin:12px 0 0}.hidden{display:none!important}.result{margin-top:28px}.resulthead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.resulthead h2{margin:0;font-size:1.3rem}.editgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.editgrid .full{grid-column:1/-1}@media(max-width:760px){.editgrid{grid-template-columns:1fr}.editgrid .full{grid-column:auto}}.editfield textarea{min-height:135px}.editfield .personal{min-height:100px}.preview{border:1px solid var(--line);background:var(--panel);padding:32px;border-radius:12px;max-width:820px;margin:18px auto;white-space:pre-wrap;word-break:break-word}.preview h3{color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:6px;margin:20px 0 8px}.previewname{font-size:1.6rem;font-weight:700}.exportrow{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.print-only{display:none}
+@media print{body{padding:0;background:white;color:#111}.hero,.uploadcard,.jdcard,.resulthead,.editor,.changes,.gaps,.exportrow,.notice{display:none!important}main{max-width:none}.result{display:block!important;margin:0}.preview{display:block!important;border:0;border-radius:0;box-shadow:none;max-width:none;margin:0;padding:8mm;white-space:pre-wrap;color:#111;background:white;font-size:10.5pt;line-height:1.45}.preview h3{color:#111;margin:14px 0 5px}.print-only{display:block}}
+</style></head>
+<body><main>
+<header class="hero"><div class="brand"><span class="logo">CV</span><span>CVPRO</span></div><h1>حوّل سيرتك إلى CV احترافي</h1><p class="subtitle">ارفع سيرتك الحالية، حسّن الصياغة والترتيب، عدّل المحتوى بنفسك، ثم صدّر ملف Word أو PDF. يمكنك العمل بدون وصف وظيفة أو تخصيص السيرة لوظيفة معينة.</p></header>
+<section class="card uploadcard"><label for="cv">السيرة الذاتية الحالية</label><div class="uploadrow"><input id="file" class="file" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><label class="filelabel" for="file">اختيار PDF أو Word</label><span id="fstat" class="status small">أو الصق نص السيرة أدناه</span></div><textarea id="cv" dir="auto" maxlength="12000" placeholder="الصق نص سيرتك هنا..."></textarea><div class="small"><span id="cvc">0</span> / 12000 حرف</div></section>
+<section class="card jdcard"><label for="jd">وصف الوظيفة (اختياري)</label><textarea id="jd" dir="auto" maxlength="8000" placeholder="الصق الوصف الوظيفي هنا إذا تريد تخصيص السيرة لوظيفة معينة..."></textarea><div class="small"><span id="jdc">0</span> / 8000 حرف</div></section>
+<div id="ts"></div><div class="actions"><button id="go">تحسين السيرة الذاتية</button><span id="status" class="status" role="status" aria-live="polite"></span></div><p class="notice">لا نخزّن الملف. يتم استخراج النص داخل المتصفح، ثم إرسال النص فقط إلى مزوّد AI لمعالجته. تجنّب رفع معلومات حساسة غير ضرورية.</p>
+<section id="result" class="result hidden"><div class="card resulthead"><h2>راجع وعدّل سيرتك</h2><span class="small">عدّل الحقول قبل التصدير. التغييرات هنا لن تُرسل إلى AI مرة أخرى.</span></div><div class="card editor"><div class="editgrid" id="fields"></div><div class="actions"><button class="secondary" id="refreshPreview">تحديث المعاينة</button></div></div><div class="card changes"><h3>ماذا تغيّر؟</h3><ul id="changes"></ul></div><div class="card gaps"><h3>متطلبات غير واضحة أو غير مذكورة</h3><ul id="gaps"></ul></div><div class="exportrow"><button id="word">تنزيل Word (.docx)</button><button id="pdf" class="secondary">طباعة / حفظ PDF</button><button id="copy" class="secondary">نسخ النص الكامل</button></div><div class="preview" id="preview" dir="auto"></div></section>
 </main>
-
 <script>
-(function () {
-  var $ = function (id) { return document.getElementById(id); };
-  var cv = $("cv"), jd = $("jd"), go = $("go"), st = $("status");
-
-  function count() { $("cvc").textContent = cv.value.length; $("jdc").textContent = jd.value.length; }
-  cv.addEventListener("input", count); jd.addEventListener("input", count);
-
-  // Put your Cloudflare Turnstile Site Key here to enable the bot check. Leave empty to disable.
-  var TURNSTILE_SITE_KEY = "";
-  var tsToken = "", tsId = null;
-
-  function loadScript(src) {
-    return new Promise(function (res, rej) {
-      var s = document.createElement("script");
-      s.src = src; s.onload = res;
-      s.onerror = function () { rej(new Error("تعذّر تحميل مكتبة القراءة. تأكد من الإنترنت وحاول ثانية.")); };
-      document.head.appendChild(s);
-    });
-  }
-
-  if (TURNSTILE_SITE_KEY) {
-    window.onTsLoad = function () {
-      tsId = turnstile.render("#ts", {
-        sitekey: TURNSTILE_SITE_KEY,
-        callback: function (t) { tsToken = t; },
-        "expired-callback": function () { tsToken = ""; }
-      });
-    };
-    loadScript("https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTsLoad").catch(function () {});
-  }
-
-  var PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
-  async function readPdf(buf) {
-    await loadScript(PDFJS + "pdf.min.js");
-    pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + "pdf.worker.min.js";
-    var pdf = await pdfjsLib.getDocument({ data: buf }).promise, pages = [];
-    for (var p = 1; p <= pdf.numPages; p++) {
-      var page = await pdf.getPage(p), tc = await page.getTextContent();
-      var lines = [], line = "", y = null;
-      tc.items.forEach(function (it) {
-        var iy = it.transform[5];
-        if (y !== null && Math.abs(iy - y) > 2 && line.trim()) { lines.push(line.trim()); line = ""; }
-        line += it.str; y = iy;
-        if (it.hasEOL) { lines.push(line.trim()); line = ""; }
-      });
-      if (line.trim()) lines.push(line.trim());
-      pages.push(lines.join("\n"));
-    }
-    return pages.join("\n\n");
-  }
-  async function readDocx(buf) {
-    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js");
-    return (await mammoth.extractRawText({ arrayBuffer: buf })).value;
-  }
-
-  $("file").addEventListener("change", async function (e) {
-    var f = e.target.files[0], fs = $("fstat");
-    if (!f) return;
-    fs.className = "status";
-    if (f.size > 5 * 1024 * 1024) { fs.className = "status err"; fs.textContent = "الملف أكبر من 5MB."; return; }
-    fs.textContent = "جاري قراءة الملف...";
-    try {
-      var name = f.name.toLowerCase(), buf = await f.arrayBuffer(), text;
-      if (name.endsWith(".pdf")) text = await readPdf(buf);
-      else if (name.endsWith(".docx")) text = await readDocx(buf);
-      else throw new Error("الصيغة المدعومة PDF و DOCX فقط. ملفات DOC القديمة احفظها كـ DOCX.");
-      text = text.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
-      if (text.length < 50) throw new Error("ما قدرنا نستخرج نص من الملف. إذا كان صورة ممسوحة ضوئياً، الصق النص يدوياً.");
-      var cut = text.length > 12000;
-      cv.value = text.slice(0, 12000); count();
-      fs.textContent = cut ? "الملف طويل واقتطعنا أول 12000 حرف. راجع النص." : "تمت القراءة. راجع النص وعدّله إذا لزم.";
-    } catch (err) {
-      fs.className = "status err"; fs.textContent = err.message;
-    }
-    e.target.value = "";
-  });
-
-  function fill(ul, items) {
-    ul.innerHTML = "";
-    if (!items.length) { var li = document.createElement("li"); li.textContent = "لا شيء"; ul.appendChild(li); return; }
-    items.forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
-  }
-
-  go.addEventListener("click", async function () {
-    st.className = "status"; st.textContent = "";
-    if (cv.value.trim().length < 50 || jd.value.trim().length < 30) {
-      st.className = "status err"; st.textContent = "الصق السيرة ووصف الوظيفة كاملين."; return;
-    }
-    if (TURNSTILE_SITE_KEY && !tsToken) {
-      st.className = "status err"; st.textContent = "أكمل التحقق أولاً."; return;
-    }
-    go.disabled = true; st.textContent = "جاري التعديل، يستغرق عادةً أقل من نصف دقيقة...";
-    try {
-      var res = await fetch("/api/tailor", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cv: cv.value, jd: jd.value, ts: tsToken })
-      });
-      var data = await res.json();
-      if (!res.ok) throw new Error(data.error || "صار خطأ. حاول مرة ثانية.");
-      $("out").textContent = data.cv;
-      fill($("changes"), data.changes || []);
-      fill($("gaps"), data.gaps || []);
-      $("result").classList.add("show");
-      $("result").scrollIntoView({ behavior: "smooth", block: "start" });
-      st.textContent = "";
-    } catch (e) {
-      st.className = "status err"; st.textContent = e.message;
-    } finally {
-      go.disabled = false;
-      if (tsId !== null) { turnstile.reset(tsId); tsToken = ""; }
-    }
-  });
-
-  $("copy").addEventListener("click", function () {
-    navigator.clipboard.writeText($("out").textContent).then(function () {
-      $("copy").textContent = "تم النسخ"; setTimeout(function () { $("copy").textContent = "انسخ"; }, 1500);
-    });
-  });
-  $("dl").addEventListener("click", function () {
-    var a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([$("out").textContent], { type: "text/plain;charset=utf-8" }));
-    a.download = "tailored-cv.txt"; a.click(); URL.revokeObjectURL(a.href);
-  });
-  $("print").addEventListener("click", function () { window.print(); });
+(function(){
+ const $=id=>document.getElementById(id), cv=$('cv'), jd=$('jd'), status=$('status'), go=$('go');
+ const labels={summary:'Professional Summary',experience:'Work Experience',education:'Education',skills:'Skills',certifications:'Certifications',projects:'Projects',languages:'Languages'};
+ const keys=['summary','experience','education','skills','certifications','projects','languages']; let model=null, changeNotes=[], gaps=[];
+ const count=()=>{$('cvc').textContent=cv.value.length;$('jdc').textContent=jd.value.length}; cv.addEventListener('input',count);jd.addEventListener('input',count);
+ function loadScript(src){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error('تعذر تحميل مكتبة معالجة الملفات. تحقق من اتصال الإنترنت.'));document.head.appendChild(s)})}
+ const PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+ async function readPdf(buf){await loadScript(PDFJS+'pdf.min.js');pdfjsLib.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.js';const pdf=await pdfjsLib.getDocument({data:buf}).promise, pages=[];for(let p=1;p<=pdf.numPages;p++){const page=await pdf.getPage(p),tc=await page.getTextContent();let lines=[],line='',y=null;tc.items.forEach(it=>{const iy=it.transform[5];if(y!==null&&Math.abs(iy-y)>2&&line.trim()){lines.push(line.trim());line=''}line+=it.str;y=iy;if(it.hasEOL){lines.push(line.trim());line=''}});if(line.trim())lines.push(line.trim());pages.push(lines.join('\n'))}return pages.join('\n\n')}
+ async function readDocx(buf){await loadScript('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js');return(await mammoth.extractRawText({arrayBuffer:buf})).value}
+ $('file').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;const fs=$('fstat');fs.className='status small';if(f.size>5*1024*1024){fs.className='status error small';fs.textContent='الملف أكبر من 5MB';return}fs.textContent='جاري القراءة...';try{const name=f.name.toLowerCase(),buf=await f.arrayBuffer();let text=name.endsWith('.pdf')?await readPdf(buf):name.endsWith('.docx')?await readDocx(buf):null;if(text===null)throw Error('الملفات المدعومة PDF و DOCX فقط.');text=text.replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();if(text.length<50)throw Error('تعذر استخراج نص. إذا كانت السيرة صورة ممسوحة، الصق النص يدوياً.');cv.value=text.slice(0,12000);count();fs.textContent=text.length>12000?'اقتطعنا النص إلى 12000 حرف؛ راجعه.':'تم استخراج النص. راجعه قبل الإرسال.'}catch(err){fs.className='status error small';fs.textContent=err.message}e.target.value=''});
+ function fillList(id,items){const ul=$(id);ul.innerHTML='';(items?.length?items:['لا شيء']).forEach(x=>{const li=document.createElement('li');li.textContent=x;ul.appendChild(li)})}
+ function fieldMarkup(key,val){const div=document.createElement('div');div.className='editfield'+(['summary','experience'].includes(key)?' full':'');const label=document.createElement('label');label.textContent=labels[key];const ta=document.createElement('textarea');ta.dataset.key=key;ta.dir='auto';ta.value=Array.isArray(val)?val.join('\n\n'):val||'';if(key==='summary')ta.rows=5;if(['experience','education','projects'].includes(key))ta.rows=8;div.append(label,ta);return div}
+ function personalField(k,label,value){const div=document.createElement('div');div.className='editfield';const l=document.createElement('label');l.textContent=label;const ta=document.createElement('textarea');ta.dataset.person=k;ta.rows=2;ta.value=value||'';ta.dir='auto';div.append(l,ta);return div}
+ function renderEditor(){const container=$('fields');container.innerHTML='';const p=model.personalInfo||{};container.append(personalField('name','Name',p.name),personalField('contact','Contact',p.contact),personalField('location','Location',p.location),personalField('linkedin','LinkedIn',p.linkedin));keys.forEach(k=>container.append(fieldMarkup(k,model[k])))}
+ function getModel(){document.querySelectorAll('#fields textarea[data-key]').forEach(ta=>{const k=ta.dataset.key;model[k]=['experience','education','skills','certifications','projects','languages'].includes(k)?ta.value.split(/\n\s*\n|\n/).map(s=>s.trim()).filter(Boolean):ta.value.trim()});document.querySelectorAll('#fields textarea[data-person]').forEach(ta=>model.personalInfo[ta.dataset.person]=ta.value.trim());return model}
+ function cvText(){const p=model.personalInfo||{},out=[];if(p.name)out.push(p.name);[p.contact,p.location,p.linkedin].filter(Boolean).forEach(x=>out.push(x));if(model.summary)out.push('PROFESSIONAL SUMMARY\n'+model.summary);keys.slice(1).forEach(k=>{if(model[k]?.length)out.push(labels[k].toUpperCase()+'\n'+model[k].join('\n\n'))});return out.join('\n\n')}
+ function renderPreview(){getModel();const preview=$('preview');preview.innerHTML='';const p=model.personalInfo||{};const name=document.createElement('div');name.className='previewname';name.textContent=p.name||'';preview.append(name);const meta=[p.contact,p.location,p.linkedin].filter(Boolean).join(' | ');if(meta){const m=document.createElement('div');m.textContent=meta;preview.append(m)}if(model.summary){const h=document.createElement('h3');h.textContent='PROFESSIONAL SUMMARY';preview.append(h);const s=document.createElement('p');s.textContent=model.summary;preview.append(s)}keys.slice(1).forEach(k=>{if(!model[k]?.length)return;const h=document.createElement('h3');h.textContent=labels[k].toUpperCase();preview.append(h);model[k].forEach(entry=>{const para=document.createElement('p');para.textContent=entry;preview.append(para)})})}
+ go.addEventListener('click',async()=>{status.className='status';status.textContent='';if(cv.value.trim().length<50){status.className='status error';status.textContent='أدخل نص السيرة الذاتية أولاً.';return}go.disabled=true;status.textContent='جاري تحسين السيرة وتحويلها إلى أقسام...';try{const res=await fetch('/api/tailor',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cv:cv.value,jd:jd.value.trim()})});const data=await res.json();if(!res.ok)throw Error(data.error||'حدث خطأ. حاول مرة أخرى.');model=data;changeNotes=data.changes||[];gaps=data.gaps||[];renderEditor();fillList('changes',changeNotes);fillList('gaps',gaps);renderPreview();$('result').classList.remove('hidden');$('result').scrollIntoView({behavior:'smooth',block:'start'});status.textContent=''}catch(err){status.className='status error';status.textContent=err.message}finally{go.disabled=false}});
+ $('refreshPreview').addEventListener('click',()=>{renderPreview();$('preview').scrollIntoView({behavior:'smooth',block:'start'})});
+ $('copy').addEventListener('click',async()=>{renderPreview();try{await navigator.clipboard.writeText(cvText());$('copy').textContent='تم النسخ';setTimeout(()=>$('copy').textContent='نسخ النص الكامل',1600)}catch{status.className='status error';status.textContent='تعذر النسخ من المتصفح'}});
+ $('pdf').addEventListener('click',()=>{renderPreview();window.print()});
+ $('word').addEventListener('click',async()=>{try{renderPreview();await loadScript('https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js');const d=window.docx;const p=model.personalInfo||{};const isArabic=/[\u0600-\u06FF]/.test(cvText());const align=isArabic?d.AlignmentType.RIGHT:d.AlignmentType.LEFT;const paras=[];function add(text,opts={}){if(!text)return;paras.push(new d.Paragraph({text:String(text),alignment:align,spacing:{after:opts.after||100},heading:opts.heading,bullet:opts.bullet?{indent:360}:undefined,bidi:isArabic}))}add(p.name,{after:180});[p.contact,p.location,p.linkedin].filter(Boolean).forEach(v=>add(v));if(model.summary){add('PROFESSIONAL SUMMARY',{heading:d.HeadingLevel.HEADING_1,after:80});add(model.summary)}keys.slice(1).forEach(k=>{if(!model[k]?.length)return;add(labels[k].toUpperCase(),{heading:d.HeadingLevel.HEADING_1,after:80});model[k].forEach(entry=>String(entry).split('\n').forEach(line=>add(line,{bullet:/^[-•]\s*/.test(line),after:60}))) });const doc=new d.Document({sections:[{properties:{},children:paras}]});const blob=await d.Packer.toBlob(doc);const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CVPRO-Professional-CV.docx';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}catch(err){status.className='status error';status.textContent='تعذر إنشاء Word: '+err.message}});
 })();
-</script>
-</body>
-</html>
+</script></body></html>
