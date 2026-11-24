@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>رتّب سيرتك الذاتية</title>
-<meta name="description" content="ارفع سيرتك الذاتية القديمة واحصل على سيرة منظمة باحترافية بصيغتي PDF وWord. مجاني وبدون تسجيل.">
+<title>عدّل سيرتك على الوظيفة</title>
+<meta name="description" content="الصق سيرتك الذاتية ووصف الوظيفة، واحصل على سيرة معدّلة تناسب الوظيفة. مجاني وبدون تسجيل.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
@@ -70,32 +70,40 @@
   #result.show { display: block; }
   .result-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 1.25rem; align-items: start; }
   @media (max-width: 760px) { .result-grid { grid-template-columns: 1fr; } }
-  .paper {
-    background: #fff; color: #111; border: 1px solid var(--line); border-radius: 6px;
-    padding: 1.75rem 1.75rem 2rem; overflow-x: auto;
+  .sheet {
+    background: var(--sheet); border: 1px solid var(--line); border-radius: 6px;
+    padding: 1.75rem; word-break: break-word; font: 400 .95rem/1.55 Calibri, Arial, sans-serif; text-align: left;
   }
+  .cv-name { font-size: 1.5rem; font-weight: 700; text-align: center; }
+  .cv-contact { text-align: center; font-size: .88rem; margin-bottom: .6rem; }
+  .cv-h { font-weight: 700; margin-top: 1rem; padding-bottom: .1rem; border-bottom: 1px solid var(--muted); }
+  .cv-job { font-weight: 700; margin-top: .55rem; }
+  .cv-b { position: relative; padding-inline-start: 1.1rem; }
+  .cv-b::before { content: "\2022"; position: absolute; inset-inline-start: .25rem; }
+  .cv-p { margin-top: .15rem; }
+  .hint { font-size: .8rem; color: var(--muted); margin-bottom: .75rem; }
+  aside li { text-align: start; }
   aside h2 { font-size: 1rem; margin: 0 0 .4rem; }
   aside ul { margin: 0 0 1.25rem; padding-inline-start: 1.1rem; }
   aside li { margin-bottom: .35rem; }
   aside .gaps li::marker { color: var(--err); }
-  .toolbar { display: flex; gap: .5rem; margin-bottom: .5rem; flex-wrap: wrap; }
-  .toolbar button { padding: .5rem 1.2rem; font-size: .95rem; }
-  .hint { font-size: .85rem; color: var(--muted); margin: 0 0 .9rem; }
-  .opt { color: var(--muted); font-weight: 400; font-size: .9rem; }
-  .fieldnote { font-size: .85rem; color: var(--muted); margin: .35rem 0 0; }
+  .toolbar { display: flex; gap: .5rem; margin-bottom: .75rem; flex-wrap: wrap; }
+  .toolbar button { padding: .45rem 1rem; font-size: .9rem; }
   @media print {
     body { background: #fff; padding: 0; }
-    .inputs, .actions, .privacy, h1, .sub, aside, .toolbar, .hint { display: none !important; }
+    .inputs, .actions, .privacy, h1, .sub, aside, .toolbar, .hint, #ts { display: none !important; }
     .result-grid { display: block; }
-    .paper { border: 0; padding: 0; }
+    .sheet { border: 0; padding: 0; color: #000; background: #fff; font-size: 10.5pt; }
+    .cv-h { border-bottom-color: #777; }
+    @page { margin: 14mm; }
   }
   @media (prefers-reduced-motion: no-preference) { button { transition: background .15s, color .15s; } }
 </style>
 </head>
 <body>
 <main>
-  <h1>رتّب سيرتك الذاتية</h1>
-  <p class="sub">ارفع سيرتك القديمة، وراح نعيد ترتيبها بتنسيق احترافي ونعطيك ملف Word وملف PDF جاهزين. وإذا الصقت وصف وظيفة، نعدّل السيرة لتناسبها من دون ما نضيف خبرات ما عندك.</p>
+  <h1>عدّل سيرتك على الوظيفة</h1>
+  <p class="sub">الصق سيرتك الذاتية القديمة ووصف الوظيفة الجديدة، وراح نطلّع لك سيرة إنجليزية بصيغة ATS تناسب الوظيفة (DOCX وPDF)، من دون ما نضيف خبرات ما عندك.</p>
 
   <div class="inputs">
     <div>
@@ -109,36 +117,36 @@
       <div class="count"><span id="cvc">0</span> / 12000</div>
     </div>
     <div>
-      <label for="jd">وصف الوظيفة <span class="opt">(اختياري)</span></label>
+      <label for="jd">وصف الوظيفة (Job Description)</label>
       <textarea id="jd" dir="auto" maxlength="8000" placeholder="الصق وصف الوظيفة هنا"></textarea>
       <div class="count"><span id="jdc">0</span> / 8000</div>
-      <p class="fieldnote">اتركه فارغاً إذا تريد ترتيب السيرة فقط. الصقه إذا تريد تعديلها لوظيفة معيّنة.</p>
     </div>
   </div>
 
   <div id="ts"></div>
   <div class="actions">
-    <button id="go" type="button">جهّز سيرتي</button>
+    <button id="go" type="button">عدّل السيرة</button>
     <span id="status" class="status" role="status" aria-live="polite"></span>
   </div>
-  <p class="privacy">لا نخزّن سيرتك ولا وصف الوظيفة. قراءة الملف وإنشاء ملفات Word وPDF تتم داخل متصفحك، والنص فقط يُرسل للمعالجة ثم يُحذف.</p>
+  <p class="privacy">لا نخزّن سيرتك ولا وصف الوظيفة. قراءة الملف تتم داخل متصفحك ولا يُرفع الملف نفسه، والنص فقط يُرسل للمعالجة ثم يُحذف.</p>
 
   <section id="result" aria-label="النتيجة">
     <div class="toolbar">
-      <button id="dlDocx" type="button">حمّل Word (.docx)</button>
-      <button id="dlPdf" type="button">حمّل PDF</button>
-      <button id="copy" type="button" class="ghost">انسخ النص</button>
+      <button id="docx" type="button">حمّل DOCX</button>
+      <button id="print" type="button">حمّل PDF</button>
+      <button id="copy" type="button" class="ghost">انسخ</button>
+      <button id="dl" type="button" class="ghost">TXT</button>
     </div>
-    <p class="hint">لملف PDF: ستظهر نافذة الطباعة، اختر منها «حفظ بصيغة PDF» (Save as PDF).</p>
+    <div class="hint">للـ PDF: بنافذة الطباعة اختر الوجهة "Save as PDF" (حفظ كـ PDF).</div>
     <div class="result-grid">
-      <div id="out" class="paper"></div>
+      <div id="out" class="sheet" dir="ltr"></div>
       <aside>
         <h2>شنو تغيّر</h2>
         <ul id="changes"></ul>
-        <div id="gapbox">
-          <h2>متطلبات ما ظاهرة بسيرتك</h2>
-          <ul id="gaps" class="gaps"></ul>
-        </div>
+        <h2>شنو يطابق الوظيفة</h2>
+        <ul id="matches"></ul>
+        <h2>متطلبات ما ظاهرة بسيرتك</h2>
+        <ul id="gaps" class="gaps"></ul>
       </aside>
     </div>
   </section>
@@ -222,243 +230,21 @@
     e.target.value = "";
   });
 
-  // ---------- CV template (one source of truth for preview and PDF) ----------
-  var CV_CSS = [
-    '.cv{font-family:"IBM Plex Sans Arabic",Arial,"Segoe UI",sans-serif;color:#111;font-size:10.5pt;line-height:1.5}',
-    '.cv h1{font-size:22pt;line-height:1.2;margin:0;text-align:center;font-weight:700}',
-    '.cv .ttl{text-align:center;color:#0f6b6b;font-weight:600;margin:2px 0 0}',
-    '.cv .contact{text-align:center;color:#444;font-size:9.5pt;margin:4px 0 6px}',
-    '.cv h2{font-size:11.5pt;color:#0f6b6b;border-bottom:1.5px solid #0f6b6b;padding-bottom:2px;margin:14px 0 6px;font-weight:700;break-after:avoid}',
-    '.cv .item{margin-bottom:8px;break-inside:avoid}',
-    '.cv .row{font-weight:700}',
-    '.cv .meta{color:#555;font-size:9.5pt}',
-    '.cv ul{margin:3px 0 0;padding-inline-start:18px}',
-    '.cv li{margin-bottom:2px}',
-    '.cv p{margin:0 0 3px}'
-  ].join("\n");
-  (function () { var st = document.createElement("style"); st.textContent = CV_CSS; document.head.appendChild(st); })();
-
-  function esc(t) {
-    return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
-  }
-  function dot(parts) { return parts.filter(Boolean).join(" · "); }
-  function ul(items) { return items && items.length ? "<ul>" + items.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : ""; }
-  function sec(label, inner) { return inner ? "<h2>" + esc(label) + "</h2>" + inner : ""; }
-
-  function cvHtml(cv) {
-    var L = cv.labels, h = "";
-    h += "<h1>" + esc(cv.name) + "</h1>";
-    if (cv.title) h += '<div class="ttl">' + esc(cv.title) + "</div>";
-    if (cv.contact.length) h += '<div class="contact">' + cv.contact.map(function (c) { return "<bdi>" + esc(c) + "</bdi>"; }).join(" &nbsp;|&nbsp; ") + "</div>";
-    h += sec(L.summary, cv.summary ? "<p>" + esc(cv.summary) + "</p>" : "");
-    h += sec(L.experience, cv.experience.map(function (e) {
-      return '<div class="item"><div class="row">' + esc(e.role) + '</div><div class="meta">' +
-        esc(dot([e.company, e.location, e.dates])) + "</div>" + ul(e.bullets) + "</div>";
-    }).join(""));
-    h += sec(L.education, cv.education.map(function (e) {
-      return '<div class="item"><div class="row">' + esc(e.degree) + '</div><div class="meta">' +
-        esc(dot([e.school, e.location, e.dates])) + "</div>" + ul(e.details) + "</div>";
-    }).join(""));
-    h += sec(L.skills, cv.skills.map(function (g) {
-      return "<p>" + (g.group ? "<strong>" + esc(g.group) + ":</strong> " : "") + esc(g.items.join(", ")) + "</p>";
-    }).join(""));
-    h += sec(L.certifications, ul(cv.certifications));
-    h += sec(L.languages, cv.languages.length ? "<p>" + esc(cv.languages.join(" · ")) + "</p>" : "");
-    h += sec(L.projects, cv.projects.map(function (p) {
-      return '<div class="item"><div class="row">' + esc(p.name) + "</div>" +
-        (p.dates ? '<div class="meta">' + esc(p.dates) + "</div>" : "") + ul(p.bullets) + "</div>";
-    }).join(""));
-    cv.additional.forEach(function (a) { h += sec(a.title, ul(a.items)); });
-    return '<div class="cv" dir="' + cv.dir + '" lang="' + esc(cv.lang) + '">' + h + "</div>";
-  }
-
-  function cvText(cv) {
-    var L = cv.labels, o = [];
-    function block(label, lines) { if (lines.length) { o.push("", label.toUpperCase(), ""); o = o.concat(lines); } }
-    function bl(a) { return a.map(function (x) { return "- " + x; }); }
-    o.push(cv.name); if (cv.title) o.push(cv.title); if (cv.contact.length) o.push(cv.contact.join(" | "));
-    block(L.summary, cv.summary ? [cv.summary] : []);
-    var ex = []; cv.experience.forEach(function (e) { ex.push(e.role, dot([e.company, e.location, e.dates])); ex = ex.concat(bl(e.bullets), [""]); });
-    block(L.experience, ex);
-    var ed = []; cv.education.forEach(function (e) { ed.push(e.degree, dot([e.school, e.location, e.dates])); ed = ed.concat(bl(e.details), [""]); });
-    block(L.education, ed);
-    block(L.skills, cv.skills.map(function (g) { return (g.group ? g.group + ": " : "") + g.items.join(", "); }));
-    block(L.certifications, bl(cv.certifications));
-    block(L.languages, cv.languages.length ? [cv.languages.join(" · ")] : []);
-    var pr = []; cv.projects.forEach(function (p) { pr.push(p.name); if (p.dates) pr.push(p.dates); pr = pr.concat(bl(p.bullets), [""]); });
-    block(L.projects, pr);
-    cv.additional.forEach(function (a) { block(a.title, bl(a.items)); });
-    return o.join("\n").replace(/\n{3,}/g, "\n\n").trim() + "\n";
-  }
-
-  // ---------- Word (.docx) ----------
-  var DOCX_URL = "https://cdn.jsdelivr.net/npm/docx@9.8.1/dist/index.iife.js";
-
-  function buildDocx(cv) {
-    var D = window.docx, rtl = cv.dir === "rtl", FONT = "Arial", ACCENT = "0F6B6B", L = cv.labels;
-    var kids = [];
-
-    function run(t, o) {
-      o = o || {};
-      var size = o.size || 21;
-      return new D.TextRun({
-        text: t, font: FONT, rightToLeft: rtl,
-        bold: !!o.bold, boldComplexScript: !!o.bold,
-        size: size, sizeComplexScript: size, color: o.color
-      });
-    }
-    function para(children, o) {
-      o = o || {};
-      return new D.Paragraph({
-        children: children, bidirectional: rtl, alignment: o.align,
-        spacing: o.spacing || { after: 40 }, border: o.border, keepNext: o.keepNext,
-        numbering: o.numbering, heading: o.heading
-      });
-    }
-    function heading(label) {
-      kids.push(para([run(label, { bold: true, size: 24, color: ACCENT })], {
-        heading: D.HeadingLevel.HEADING_2, keepNext: true, spacing: { before: 260, after: 80 },
-        border: { bottom: { style: D.BorderStyle.SINGLE, size: 6, color: ACCENT, space: 1 } }
-      }));
-    }
-    function bullets(items) {
-      (items || []).forEach(function (b) {
-        kids.push(para([run(b)], { numbering: { reference: "bul", level: 0 }, spacing: { after: 30 } }));
-      });
-    }
-    function entry(first, second, items) {
-      kids.push(para([run(first, { bold: true })], { keepNext: true, spacing: { before: 80, after: 0 } }));
-      if (second) kids.push(para([run(second, { size: 19, color: "555555" })], { keepNext: !!(items && items.length), spacing: { after: 30 } }));
-      bullets(items);
-    }
-
-    // In RTL paragraphs a phone number like "+964 770 000 0000" gets reordered; LRM marks keep it left-to-right.
-    function ltrSafe(t) { return rtl && !/[\u0600-\u06FF]/.test(t) ? "\u200E" + t + "\u200E" : t; }
-
-    kids.push(para([run(cv.name, { bold: true, size: 44 })], { align: D.AlignmentType.CENTER, spacing: { after: 40 } }));
-    if (cv.title) kids.push(para([run(cv.title, { bold: true, size: 24, color: ACCENT })], { align: D.AlignmentType.CENTER, spacing: { after: 40 } }));
-    if (cv.contact.length) kids.push(para([run(cv.contact.map(ltrSafe).join("  |  "), { size: 19, color: "444444" })], { align: D.AlignmentType.CENTER, spacing: { after: 80 } }));
-
-    if (cv.summary) { heading(L.summary); kids.push(para([run(cv.summary)])); }
-    if (cv.experience.length) {
-      heading(L.experience);
-      cv.experience.forEach(function (e) { entry(e.role, dot([e.company, e.location, e.dates]), e.bullets); });
-    }
-    if (cv.education.length) {
-      heading(L.education);
-      cv.education.forEach(function (e) { entry(e.degree, dot([e.school, e.location, e.dates]), e.details); });
-    }
-    if (cv.skills.length) {
-      heading(L.skills);
-      cv.skills.forEach(function (g) {
-        var kids2 = [];
-        if (g.group) kids2.push(run(g.group + ": ", { bold: true }));
-        kids2.push(run(g.items.join(", ")));
-        kids.push(para(kids2));
-      });
-    }
-    if (cv.certifications.length) { heading(L.certifications); bullets(cv.certifications); }
-    if (cv.languages.length) { heading(L.languages); kids.push(para([run(cv.languages.join("  ·  "))])); }
-    if (cv.projects.length) {
-      heading(L.projects);
-      cv.projects.forEach(function (p) { entry(p.name, p.dates, p.bullets); });
-    }
-    cv.additional.forEach(function (a) { heading(a.title); bullets(a.items); });
-
-    var doc = new D.Document({
-      creator: "CVPRO", title: cv.name + " - CV",
-      styles: {
-        default: {
-          document: { run: { font: FONT, size: 21 } },
-          heading2: {
-            run: { font: FONT, size: 24, bold: true, color: ACCENT },
-            paragraph: { spacing: { before: 260, after: 80 }, keepNext: true }
-          }
-        }
-      },
-      numbering: {
-        config: [{
-          reference: "bul",
-          levels: [{
-            level: 0, format: D.LevelFormat.BULLET, text: "•", alignment: D.AlignmentType.LEFT,
-            style: { paragraph: { indent: { left: 360, hanging: 260 } } }
-          }]
-        }]
-      },
-      sections: [{
-        properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 900, bottom: 900, left: 1000, right: 1000 } } },
-        children: kids
-      }]
-    });
-    return D.Packer.toBlob(doc);
-  }
-
-  // Download names are ASCII-only: some browsers drop the whole name and the extension when it has Arabic letters.
-  // The PDF title (which suggests the PDF's name in the print dialog) keeps the full name.
-  function nameParts() { return ((cvData && cvData.name) || "").replace(/[\\\/:*?"<>|]+/g, "").trim().replace(/\s+/g, "_"); }
-  function fileBase() {
-    var ascii = nameParts().replace(/[^\x20-\x7E]+/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "");
-    return (ascii.length >= 2 ? ascii + "_" : "") + "CV";
-  }
-  function pdfTitle() { return (nameParts() || "CV") + "_CV"; }
-  function saveBlob(blob, name) {
-    var a = document.createElement("a");
-    a.href = URL.createObjectURL(blob); a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
-  }
-
-  // ---------- PDF (real text, selectable, ATS friendly: uses the browser's print engine) ----------
-  function printPdf(cv) {
-    var f = document.createElement("iframe");
-    f.setAttribute("aria-hidden", "true");
-    f.style.cssText = "position:fixed;inset-inline-end:0;bottom:0;width:0;height:0;border:0;visibility:hidden";
-    var done = false;
-    function cleanup() { if (f.parentNode) f.parentNode.removeChild(f); }
-    f.onload = function () {
-      if (done) return; done = true;
-      var w = f.contentWindow, ready = (w.document.fonts && w.document.fonts.ready) || Promise.resolve();
-      Promise.race([ready, new Promise(function (r) { setTimeout(r, 2500); })]).then(function () {
-        setTimeout(function () {
-          w.focus(); w.print();
-          w.addEventListener("afterprint", cleanup);
-          setTimeout(cleanup, 120000);
-        }, 200);
-      });
-    };
-    document.body.appendChild(f);
-    var d = f.contentDocument;
-    d.open();
-    d.write('<!doctype html><html lang="' + esc(cv.lang) + '" dir="' + cv.dir + '"><head><meta charset="utf-8"><title>' +
-      esc(pdfTitle()) + '</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap"><style>' +
-      "html,body{margin:0;padding:0;background:#fff}@page{size:A4;margin:14mm}\n" + CV_CSS +
-      "</style></head><body>" + cvHtml(cv) + "</body></html>");
-    d.close();
-  }
-
-  // ---------- UI ----------
-  var cvData = null;
-
   function fill(ul, items) {
     ul.innerHTML = "";
-    items.forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+    if (!items.length) { var li = document.createElement("li"); li.textContent = "لا شيء"; ul.appendChild(li); return; }
+    items.forEach(function (t) { var li = document.createElement("li"); li.dir = "auto"; li.textContent = t; ul.appendChild(li); });
   }
 
   go.addEventListener("click", async function () {
     st.className = "status"; st.textContent = "";
-    var jdv = jd.value.trim();
-    if (cv.value.trim().length < 50) {
-      st.className = "status err"; st.textContent = "ارفع سيرتك أو الصق نصها كاملاً."; return;
-    }
-    if (jdv && jdv.length < 30) {
-      st.className = "status err"; st.textContent = "وصف الوظيفة قصير. الصقه كاملاً أو اتركه فارغاً."; return;
+    if (cv.value.trim().length < 50 || jd.value.trim().length < 30) {
+      st.className = "status err"; st.textContent = "الصق السيرة ووصف الوظيفة كاملين."; return;
     }
     if (TURNSTILE_SITE_KEY && !tsToken) {
       st.className = "status err"; st.textContent = "أكمل التحقق أولاً."; return;
     }
-    go.disabled = true; st.textContent = "جاري تجهيز سيرتك، يستغرق عادةً أقل من نصف دقيقة...";
+    go.disabled = true; st.textContent = "جاري التعديل، يستغرق عادةً أقل من نصف دقيقة...";
     try {
       var res = await fetch("/api/tailor", {
         method: "POST",
@@ -467,11 +253,10 @@
       });
       var data = await res.json();
       if (!res.ok) throw new Error(data.error || "صار خطأ. حاول مرة ثانية.");
-      cvData = data.cv;
-      $("out").innerHTML = cvHtml(cvData);
+      blocks = parseCV(data.cv); render(blocks);
       fill($("changes"), data.changes || []);
+      fill($("matches"), data.matches || []);
       fill($("gaps"), data.gaps || []);
-      $("gapbox").style.display = (data.gaps && data.gaps.length) ? "" : "none";
       $("result").classList.add("show");
       $("result").scrollIntoView({ behavior: "smooth", block: "start" });
       st.textContent = "";
@@ -483,26 +268,116 @@
     }
   });
 
-  $("dlDocx").addEventListener("click", async function () {
-    if (!cvData) return;
-    var b = $("dlDocx"), label = b.textContent;
-    b.disabled = true; b.textContent = "جاري الإنشاء...";
-    try {
-      if (!window.docx) await loadScript(DOCX_URL);
-      saveBlob(await buildDocx(cvData), fileBase() + ".docx");
-    } catch (e) {
-      alert("تعذّر إنشاء ملف Word: " + (e && e.message ? e.message : e));
-    } finally { b.disabled = false; b.textContent = label; }
-  });
+  // ---- CV model: parse the plain-text CV into blocks, then render / export ----
+  var blocks = [];
 
-  $("dlPdf").addEventListener("click", function () { if (cvData) printPdf(cvData); });
+  function parseCV(text) {
+    var out = [], seen = 0;
+    text.replace(/\*\*/g, "").split("\n").forEach(function (raw) {
+      var l = raw.trim(), m;
+      if (!l) return;
+      if (seen === 0 && !/^#{2,3}\s/.test(l)) { out.push({ t: "name", s: l.replace(/^#+\s*/, "") }); seen = 1; return; }
+      if (seen === 1 && !/^(#{2,3}\s|[-\u2022*]\s)/.test(l)) { out.push({ t: "contact", s: l }); seen = 2; return; }
+      seen = 2;
+      if ((m = l.match(/^###\s+(.*)/))) out.push({ t: "job", s: m[1] });
+      else if ((m = l.match(/^##\s+(.*)/))) out.push({ t: "h", s: m[1].toUpperCase() });
+      else if ((m = l.match(/^[-\u2022*]\s+(.*)/))) out.push({ t: "b", s: m[1] });
+      else if (l.length <= 40 && l === l.toUpperCase() && /[A-Z]/.test(l)) out.push({ t: "h", s: l });
+      else out.push({ t: "p", s: l });
+    });
+    return out;
+  }
+
+  function skillSplit(sec, b) {
+    return b.t === "p" && /SKILL/.test(sec) ? b.s.match(/^([^:]{2,40}):\s*(.*)$/) : null;
+  }
+
+  function render(bl) {
+    var out = $("out"), sec = "";
+    out.innerHTML = "";
+    bl.forEach(function (b) {
+      var el = document.createElement("div"), m;
+      el.className = "cv-" + b.t;
+      if (b.t === "h") sec = b.s;
+      if ((m = skillSplit(sec, b))) {
+        var st = document.createElement("strong");
+        st.textContent = m[1] + ": ";
+        el.appendChild(st); el.appendChild(document.createTextNode(m[2]));
+      } else el.textContent = b.s;
+      out.appendChild(el);
+    });
+  }
+
+  function toPlain(bl) {
+    return bl.map(function (b) {
+      if (b.t === "h" || b.t === "job") return "\n" + b.s;
+      if (b.t === "b") return "- " + b.s;
+      return b.s;
+    }).join("\n").trim() + "\n";
+  }
+
+  function save(blob, name) {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name; a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+
+  function esc(t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function run(t, o) {
+    o = o || {};
+    return "<w:r><w:rPr>" + (o.b ? "<w:b/>" : "") + (o.sz ? '<w:sz w:val="' + o.sz + '"/>' : "") +
+      '</w:rPr><w:t xml:space="preserve">' + esc(t) + "</w:t></w:r>";
+  }
+  function para(inner, o) {
+    o = o || {};
+    return "<w:p><w:pPr>" +
+      (o.border ? '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="7F7F7F"/></w:pBdr>' : "") +
+      '<w:spacing w:before="' + (o.before || 0) + '" w:after="' + (o.after === undefined ? 40 : o.after) + '"/>' +
+      (o.ind ? '<w:ind w:left="360" w:hanging="260"/>' : "") +
+      (o.center ? '<w:jc w:val="center"/>' : "") + "</w:pPr>" + inner + "</w:p>";
+  }
+
+  async function makeDocx(bl) {
+    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js");
+    var body = "", sec = "";
+    bl.forEach(function (b) {
+      var m;
+      if (b.t === "name") body += para(run(b.s, { b: 1, sz: 34 }), { center: 1, after: 60 });
+      else if (b.t === "contact") body += para(run(b.s, { sz: 20 }), { center: 1, after: 120 });
+      else if (b.t === "h") { sec = b.s; body += para(run(b.s, { b: 1, sz: 22 }), { border: 1, before: 200, after: 80 }); }
+      else if (b.t === "job") body += para(run(b.s, { b: 1 }), { before: 100 });
+      else if (b.t === "b") body += para(run("\u2022") + "<w:r><w:tab/></w:r>" + run(b.s), { ind: 1 });
+      else if ((m = skillSplit(sec, b))) body += para(run(m[1] + ": ", { b: 1 }) + run(m[2]));
+      else body += para(run(b.s));
+    });
+    var W = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
+    var H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    var R = "http://schemas.openxmlformats.org/";
+    var zip = new JSZip();
+    zip.file("[Content_Types].xml", H + '<Types xmlns="' + R + 'package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>');
+    zip.file("_rels/.rels", H + '<Relationships xmlns="' + R + 'package/2006/relationships"><Relationship Id="rId1" Type="' + R + 'officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+    zip.file("word/_rels/document.xml.rels", H + '<Relationships xmlns="' + R + 'package/2006/relationships"><Relationship Id="rId1" Type="' + R + 'officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>');
+    zip.file("word/styles.xml", H + "<w:styles " + W + '><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="21"/><w:szCs w:val="21"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="40" w:line="259" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults></w:styles>');
+    zip.file("word/document.xml", H + "<w:document " + W + "><w:body>" + body + '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="900" w:right="1000" w:bottom="900" w:left="1000" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>');
+    return zip.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+  }
 
   $("copy").addEventListener("click", function () {
-    if (!cvData) return;
-    navigator.clipboard.writeText(cvText(cvData)).then(function () {
-      $("copy").textContent = "تم النسخ"; setTimeout(function () { $("copy").textContent = "انسخ النص"; }, 1500);
+    navigator.clipboard.writeText(toPlain(blocks)).then(function () {
+      $("copy").textContent = "تم النسخ"; setTimeout(function () { $("copy").textContent = "انسخ"; }, 1500);
     });
   });
+  $("dl").addEventListener("click", function () {
+    save(new Blob([toPlain(blocks)], { type: "text/plain;charset=utf-8" }), "tailored-cv.txt");
+  });
+  $("docx").addEventListener("click", async function () {
+    var btn = $("docx"), old = btn.textContent;
+    btn.disabled = true; btn.textContent = "جاري التجهيز...";
+    try { save(await makeDocx(blocks), "tailored-cv.docx"); }
+    catch (e) { alert(e.message || "تعذّر إنشاء ملف DOCX."); }
+    btn.disabled = false; btn.textContent = old;
+  });
+  $("print").addEventListener("click", function () { window.print(); });
 })();
 </script>
 </body>
